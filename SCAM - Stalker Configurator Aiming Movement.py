@@ -4,6 +4,7 @@ import configparser
 import subprocess
 from pathlib import Path
 import os
+import shutil
 
 class MovementConfigEditor:
     def __init__(self):
@@ -413,7 +414,7 @@ class MovementConfigEditor:
                 if changed_values:
                     config[section] = changed_values
 
-        mod_path = Path('z_ScamMovementAiming_P/Stalker2/Content/GameLite/GameData/ObjPrototypes')
+        mod_path = Path('z_SCAMMovementAiming_P/Stalker2/Content/GameLite/GameData/ObjPrototypes')
         mod_path.mkdir(parents=True, exist_ok=True)
         
         cfg_content = "CustomPlayer : struct.begin {refurl=../ObjPrototypes.cfg; refkey=Player}\n"
@@ -428,8 +429,13 @@ class MovementConfigEditor:
             f.write(cfg_content)
         
         if os.path.exists('repak/repak.exe'):
-            subprocess.run(['repak/repak.exe', 'pack', 'z_MovementAimingPlus_P'])
-            messagebox.showinfo("Success", "Mod created successfully!")
+            try:
+                subprocess.run(['repak/repak.exe', 'pack', 'z_SCAMMovementAiming_P'])
+                # Remove the directory after successful packing
+                shutil.rmtree('z_SCAMMovementAiming_P')
+                messagebox.showinfo("Success", "Mod created successfully!")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to create mod: {str(e)}")
         else:
             messagebox.showerror("Error", "repak.exe not found in repak folder!")
 
